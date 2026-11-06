@@ -41,9 +41,9 @@
 
 | نوع فایل / آینه دانلود | توضیحات | لینک دانلود |
 | :--- | :--- | :---: |
-| 📦 **Universal APK (پیش‌فرض)** | نسخه جامع برای تمام گوشی‌های اندروید (ARM64 & ARMv7 & x86) | [📥 دانلود مستقیم](https://github.com/dnjebeuifedihwdih/-/releases/download/v2.35.0/JIM_VPN_v2.35.0_Universal.apk) |
+| 📦 **Universal APK (پیش‌فرض)** | نسخه جامع برای تمام گوشی‌های اندروید (ARM64 & ARMv7 & x86) | [📥 دانلود مستقیم APK](https://raw.githubusercontent.com/dnjebeuifedihwdih/-/main/JIM_VPN_v2.35.0.apk) |
 | ⚡ **آینه پرسرعت CDN** | لینک دانلود پرسرعت بدون محدودیت اینترنت ملی (jsDelivr / Arvan) | [⚡ دانلود از آینه CDN](https://cdn.jsdelivr.net/gh/dnjebeuifedihwdih/-@main/dist/JIM_VPN_v2.35.0.apk) |
-| 📱 **نسخه 64-Bit (ARM64-v8a)** | نسخه بهینه‌شده با حجم کمتر و مصرف باتری پایین‌تر برای گوشی‌های جدید | [🌐 دانلود نسخه ARM64](https://github.com/dnjebeuifedihwdih/-/releases/download/v2.35.0/JIM_VPN_v2.35.0_arm64.apk) |
+| 📱 **نسخه 64-Bit (ARM64-v8a)** | نسخه بهینه‌شده با حجم کمتر و مصرف باتری پایین‌تر برای گوشی‌های جدید | [🌐 دانلود نسخه ARM64](https://raw.githubusercontent.com/dnjebeuifedihwdih/-/main/dist/JIM_VPN_v2.35.0_arm64.apk) |
 
 ---
 
