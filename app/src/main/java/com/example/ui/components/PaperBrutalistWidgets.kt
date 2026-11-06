@@ -434,12 +434,7 @@ fun MechanicalTabSwitch(
 }
 
 /**
- * iOS Control Center Liquid Glass Power Switch Capsule.
- * Ultra-responsive, bug-free, tactile power switch card.
- */
-/**
- * Cyber Tactical Liquid Glass Reactor Switch (Game-Style HUD Connect Trigger).
- * Interactive, futuristic, smooth gesture & tap trigger with rotating hologram rings and haptic pulses.
+ * LiquidLens Slide-to-Connect Translucent Glass Gesture Controller ("Slide to Tunnel").
  */
 @Composable
 fun InkStampPowerButton(
@@ -458,219 +453,173 @@ fun InkStampPowerButton(
         else -> PastelIceBlue
     }
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(if (isPressed) 0.96f else 1f, label = "power_reactor_scale")
+    var trackWidthPx by remember { mutableFloatStateOf(0f) }
+    var dragOffsetPx by remember { mutableFloatStateOf(0f) }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "hud_reactor_spin")
-    val rotationAngle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(if (isConnected) 5000 else 10000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "reactor_ring_rotation"
-    )
+    val thumbWidthDp = 64.dp
+    val thumbWidthPx = with(androidx.compose.ui.platform.LocalDensity.current) { thumbWidthDp.toPx() }
+    val maxDragPx = (trackWidthPx - thumbWidthPx).coerceAtLeast(1f)
 
-    val capsuleShape = RoundedCornerShape(32.dp)
+    // Animated drag progress
+    val currentProgress = if (isConnected) 1f else (dragOffsetPx / maxDragPx).coerceIn(0f, 1f)
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .scale(scale)
-            .testTag("ink_power_btn")
-            .clip(capsuleShape)
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        Color(0x65FFFFFF),
-                        if (isConnected) PastelMint.copy(alpha = 0.25f) else Color(0x38FFFFFF)
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Slide Track Box
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(68.dp)
+                .testTag("ink_power_btn")
+                .onSizeChanged { trackWidthPx = it.width.toFloat() }
+                .clip(RoundedCornerShape(34.dp))
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0x55FFFFFF),
+                            if (isConnected) PastelMint.copy(alpha = 0.25f) else Color(0x35FFFFFF)
+                        )
                     )
                 )
-            )
-            .border(
-                width = 1.5.dp,
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = 0.95f),
-                        primaryColor.copy(alpha = 0.70f)
-                    )
-                ),
-                shape = capsuleShape
-            )
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null
-            ) {
-                vibrateFeedback(context)
-                onToggle()
-            }
-            .padding(horizontal = 16.dp, vertical = 14.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .border(
+                    width = 1.dp,
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.90f),
+                            primaryColor.copy(alpha = 0.50f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(34.dp)
+                )
+                .clickable { onToggle() },
+            contentAlignment = Alignment.CenterStart
         ) {
-            // Left: Game Sci-Fi Reactor Core with Hologram Ring
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    // Rotating HUD Ring Arc Canvas
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeW = 2.dp.toPx()
-                        val r = (size.minDimension - strokeW) / 2f
-                        val centerOffset = Offset(size.width / 2f, size.height / 2f)
-
-                        // Outer Dashed Orbit
-                        drawCircle(
-                            color = primaryColor.copy(alpha = 0.35f),
-                            radius = r,
-                            center = centerOffset,
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(
-                                width = strokeW,
-                                pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(12f, 10f), 0f)
-                            )
-                        )
-
-                        // Rotating Arc
-                        drawArc(
-                            color = primaryColor,
-                            startAngle = rotationAngle,
-                            sweepAngle = if (isConnected) 240f else 120f,
-                            useCenter = false,
-                            topLeft = Offset((size.width - 2 * r) / 2f, (size.height - 2 * r) / 2f),
-                            size = androidx.compose.ui.geometry.Size(2 * r, 2 * r),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = strokeW + 1.dp.toPx())
-                        )
-                    }
-
-                    // Inner Orb Sphere
-                    Box(
-                        modifier = Modifier
-                            .size(42.dp)
-                            .clip(CircleShape)
-                            .background(
-                                brush = Brush.radialGradient(
-                                    colors = listOf(
-                                        primaryColor.copy(alpha = 0.45f),
-                                        primaryColor.copy(alpha = 0.15f)
-                                    )
-                                )
-                            )
-                            .border(1.dp, Color.White.copy(alpha = 0.9f), CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (isConnecting) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(22.dp),
-                                strokeWidth = 2.5.dp,
-                                color = PastelAmber
-                            )
-                        } else {
-                            Icon(
-                                imageVector = if (isConnected) Icons.Default.Shield else Icons.Default.PowerSettingsNew,
-                                contentDescription = "کلید رآکتور اتصال",
-                                tint = primaryColor,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(14.dp))
-
-                // Center: Game Tactical Text & Matrix Status
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = when {
-                                isConnected -> "SYSTEM ONLINE"
-                                isConnecting -> "LOCKING CORE..."
-                                else -> "ENGAGE TUNNEL"
-                            },
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Black,
-                                fontSize = 9.sp,
-                                letterSpacing = 1.sp
-                            ),
-                            color = primaryColor
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Box(
-                            modifier = Modifier
-                                .size(5.dp)
-                                .clip(CircleShape)
-                                .background(primaryColor)
-                        )
-                    }
-                    Text(
-                        text = when {
-                            isConnected -> "تونل امن دکمه‌ای فعال"
-                            isConnecting -> "در حال راه‌اندازی ماتریکس..."
-                            else -> "برای فعال‌سازی لمس کنید"
-                        },
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Black,
-                            fontSize = 14.5.sp
-                        ),
-                        color = GlassTextPrimary
-                    )
-                    Text(
-                        text = activeInfo,
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 10.5.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = GlassTextSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-
-            // Right: Futuristic Tactile Reactor Badge
+            // Track Progress Fill
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
+                    .fillMaxSize()
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                primaryColor.copy(alpha = 0.30f),
-                                primaryColor.copy(alpha = 0.12f)
+                                primaryColor.copy(alpha = 0.22f * currentProgress + 0.02f),
+                                Color.Transparent
                             )
                         )
                     )
-                    .border(1.dp, primaryColor.copy(alpha = 0.6f), RoundedCornerShape(20.dp))
-                    .padding(horizontal = 14.dp, vertical = 9.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Bolt,
-                        contentDescription = null,
-                        tint = primaryColor,
-                        modifier = Modifier.size(14.dp)
+            )
+
+            // Centered Shimmer Text
+            Text(
+                text = when {
+                    isConnected -> "کشیدن برای قطع اتصال  ⟵"
+                    isConnecting -> "در حال ایجاد تونل امن..."
+                    else -> "برای اتصال بکشید  ⟶"
+                },
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Black,
+                    fontSize = 13.5.sp,
+                    letterSpacing = 0.5.sp
+                ),
+                color = primaryColor,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 70.dp)
+            )
+
+            // Draggable Glass Thumb Pill
+            val thumbOffsetPx = if (isConnected) {
+                maxDragPx
+            } else if (isConnecting) {
+                maxDragPx * 0.5f
+            } else {
+                dragOffsetPx
+            }
+
+            Box(
+                modifier = Modifier
+                    .offset { IntOffset(thumbOffsetPx.roundToInt(), 0) }
+                    .size(width = thumbWidthDp, height = 68.dp)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.95f),
+                                primaryColor.copy(alpha = 0.25f)
+                            )
+                        )
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = when {
-                            isConnected -> "قطع"
-                            isConnecting -> "..."
-                            else -> "اتصال"
-                        },
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontWeight = FontWeight.Black,
-                            fontSize = 12.sp
+                    .border(
+                        width = 1.5.dp,
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color.White,
+                                primaryColor
+                            )
                         ),
-                        color = primaryColor
+                        shape = RoundedCornerShape(30.dp)
+                    )
+                    .pointerInput(isConnected, isConnecting) {
+                        detectHorizontalDragGestures(
+                            onDragEnd = {
+                                if (dragOffsetPx > maxDragPx * 0.55f && !isConnected && !isConnecting) {
+                                    vibrateFeedback(context)
+                                    onToggle()
+                                } else if (isConnected && dragOffsetPx < maxDragPx * 0.45f) {
+                                    vibrateFeedback(context)
+                                    onToggle()
+                                }
+                                dragOffsetPx = 0f
+                            },
+                            onDragCancel = { dragOffsetPx = 0f },
+                            onHorizontalDrag = { change, dragAmount ->
+                                change.consume()
+                                dragOffsetPx = (dragOffsetPx + dragAmount).coerceIn(0f, maxDragPx)
+                            }
+                        )
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                if (isConnecting) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(22.dp),
+                        strokeWidth = 2.dp,
+                        color = PastelAmber
+                    )
+                } else {
+                    Icon(
+                        imageVector = if (isConnected) Icons.Default.Shield else Icons.Default.ArrowForward,
+                        contentDescription = "دکمه ژست اتصال",
+                        tint = primaryColor,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Info Badge Pill
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0x45FFFFFF))
+                .border(1.dp, Color.White.copy(alpha = 0.8f), RoundedCornerShape(16.dp))
+                .padding(horizontal = 14.dp, vertical = 6.dp)
+        ) {
+            Text(
+                text = activeInfo,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 11.sp
+                ),
+                color = GlassTextSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

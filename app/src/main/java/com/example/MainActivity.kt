@@ -31,7 +31,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
@@ -55,7 +54,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -71,7 +69,6 @@ import com.example.ui.components.PaperCard
 import com.example.ui.components.QuickCountryCard
 import com.example.ui.dialogs.CountryPickerDialog
 import com.example.ui.dialogs.LogsDialog
-import com.example.ui.dialogs.RepoHubDialog
 import com.example.ui.dialogs.SettingsDialog
 import com.example.ui.dialogs.SplitTunnelDialog
 import com.example.ui.theme.AetherPaperTheme
@@ -142,7 +139,6 @@ fun AetherPaperApp(
     var showCountryPickerDialog by remember { mutableStateOf(false) }
     var showLogsDialog by remember { mutableStateOf(false) }
     var showSplitTunnelDialog by remember { mutableStateOf(false) }
-    var showRepoHubDialog by remember { mutableStateOf(false) }
     var showOverflowMenu by remember { mutableStateOf(false) }
 
     val selectedMethod by viewModel.selectedMethod.collectAsState()
@@ -244,7 +240,7 @@ fun AetherPaperApp(
                             }
                         }
 
-                        // 3-Dots Overflow Menu Button
+                        // 3-Dots Overflow Menu Button (Prevents squishing on narrow phone screens!)
                         Box {
                             Box(
                                 modifier = Modifier
@@ -272,29 +268,6 @@ fun AetherPaperApp(
                                     .background(Color(0xF0FFFFFF))
                                     .border(1.dp, Color.White, RoundedCornerShape(18.dp))
                             ) {
-                                DropdownMenuItem(
-                                    text = {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(
-                                                imageVector = Icons.Default.Download,
-                                                contentDescription = null,
-                                                tint = PastelMint,
-                                                modifier = Modifier.size(18.dp)
-                                            )
-                                            Spacer(modifier = Modifier.width(10.dp))
-                                            Text(
-                                                text = "مخزن و مرکز دانلود (Repo Hub)",
-                                                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                                                color = GlassTextPrimary
-                                            )
-                                        }
-                                    },
-                                    onClick = {
-                                        showOverflowMenu = false
-                                        showRepoHubDialog = true
-                                    }
-                                )
-
                                 DropdownMenuItem(
                                     text = {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -364,100 +337,6 @@ fun AetherPaperApp(
                                     }
                                 )
                             }
-                        }
-                    }
-                }
-
-                // 2. Repo & Releases Download Hero Card
-                PaperCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { showRepoHubDialog = true },
-                    backgroundColor = GlassSurfaceBase,
-                    borderColor = PastelMint.copy(alpha = 0.5f),
-                    cornerRadius = 20.dp
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 14.dp, vertical = 11.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(CircleShape)
-                                    .background(PastelMint.copy(alpha = 0.18f))
-                                    .border(1.dp, PastelMint.copy(alpha = 0.5f), CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Download,
-                                    contentDescription = "دانلود",
-                                    tint = PastelMint,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = "مخزن رسمی و مرکز دانلود",
-                                        style = MaterialTheme.typography.titleSmall.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 13.sp
-                                        ),
-                                        color = GlassTextPrimary
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Box(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(6.dp))
-                                            .background(PastelMint.copy(alpha = 0.2f))
-                                            .padding(horizontal = 5.dp, vertical = 1.dp)
-                                    ) {
-                                        Text(
-                                            text = "v2.35.0",
-                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                fontSize = 8.5.sp,
-                                                fontWeight = FontWeight.Bold
-                                            ),
-                                            color = PastelMint
-                                        )
-                                    }
-                                }
-                                Text(
-                                    text = "dnjebeuifedihwdih/- • لینک مستقیم و آینه‌ها",
-                                    style = MaterialTheme.typography.labelSmall.copy(
-                                        fontSize = 9.5.sp,
-                                        fontWeight = FontWeight.Medium
-                                    ),
-                                    color = GlassTextSecondary,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(PastelIceBlue)
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
-                        ) {
-                            Text(
-                                text = "مرکز دانلود",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                color = Color.White
-                            )
                         }
                     }
                 }
@@ -614,13 +493,6 @@ fun AetherPaperApp(
                 logs = logs,
                 onClearLogs = { viewModel.clearLogs() },
                 onDismiss = { showLogsDialog = false }
-            )
-        }
-
-        if (showRepoHubDialog) {
-            RepoHubDialog(
-                onDismiss = { showRepoHubDialog = false },
-                onImportSubscription = { viewModel.refreshVpsServers() }
             )
         }
     }

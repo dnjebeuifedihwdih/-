@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "جیم وی پی ان ۲"
+rootProject.name = "جیم وی پی ان"
 
 include(":app")

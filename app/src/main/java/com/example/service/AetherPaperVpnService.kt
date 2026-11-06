@@ -32,9 +32,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import com.example.core.CoreCallbackHandler
-import com.example.core.CoreController
-import com.example.core.Libv2ray
+import libv2ray.CoreCallbackHandler
+import libv2ray.CoreController
+import libv2ray.Libv2ray
 
 class AetherPaperVpnService : VpnService() {
 
