@@ -25,10 +25,11 @@ class GithubVpsManager {
 
     // Fast CDN and GitHub mirror endpoints for VLESS Reality subscriptions
     private val sources = listOf(
+        "https://raw.githubusercontent.com/dnjebeuifedihwdih/-/main/vless.txt",
+        "https://raw.githubusercontent.com/dnjebeuifedihwdih/-/main/sub.txt",
+        "https://cdn.jsdelivr.net/gh/dnjebeuifedihwdih/-@main/vless.txt",
         "https://cdn.jsdelivr.net/gh/0xRadikal/Free-v2ray-Configs@main/protocols/vless.txt",
-        "https://cdn.jsdelivr.net/gh/iboxz/free-v2ray-collector@main/v2ray.txt",
-        "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/protocols/vless.txt",
-        "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/top100.txt"
+        "https://cdn.jsdelivr.net/gh/iboxz/free-v2ray-collector@main/v2ray.txt"
     )
 
     suspend fun fetchServers(): List<VpsServer> = withContext(Dispatchers.IO) {
