@@ -12,16 +12,16 @@ import java.util.concurrent.TimeUnit
 object IpLocationRepository {
 
     private val httpClient = OkHttpClient.Builder()
-        .connectTimeout(6, TimeUnit.SECONDS)
-        .readTimeout(8, TimeUnit.SECONDS)
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .readTimeout(6, TimeUnit.SECONDS)
         .build()
 
     suspend fun getPublicIpInfo(): PublicIpInfo = withContext(Dispatchers.IO) {
-        // Method 1: ip-api.com for rich geo & ISP info
+        // Try Method 1: ip-api.com for rich geo & ISP info
         try {
             val req = Request.Builder()
                 .url("http://ip-api.com/json/?fields=status,message,country,countryCode,city,isp,org,query")
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) JimVPN/2.35")
+                .header("User-Agent", "Mozilla/5.0 JimVPN")
                 .build()
             val resp = httpClient.newCall(req).execute()
             if (resp.isSuccessful) {
@@ -47,44 +47,12 @@ object IpLocationRepository {
                     )
                 }
             }
-        } catch (_: Exception) {}
-
-        // Method 2: ipinfo.io
-        try {
-            val req = Request.Builder()
-                .url("https://ipinfo.io/json")
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) JimVPN/2.35")
-                .build()
-            val resp = httpClient.newCall(req).execute()
-            if (resp.isSuccessful) {
-                val body = resp.body?.string() ?: ""
-                val json = JSONObject(body)
-                val ip = json.optString("ip")
-                val countryCode = json.optString("country")
-                val city = json.optString("city")
-                val org = json.optString("org")
-                val flag = SupportedCountries.find(countryCode).flagEmoji
-
-                if (ip.isNotBlank()) {
-                    return@withContext PublicIpInfo(
-                        ip = ip,
-                        country = if (flag.isNotBlank()) "$flag $countryCode" else countryCode,
-                        countryCode = countryCode,
-                        city = city,
-                        isp = org,
-                        isSecureDns = true,
-                        isLoading = false,
-                        lastUpdated = System.currentTimeMillis()
-                    )
-                }
-            }
-        } catch (_: Exception) {}
+        } catch (ignored: Exception) {}
 
         // Fallback 1: Cloudflare trace
         try {
             val req = Request.Builder()
                 .url("https://www.cloudflare.com/cdn-cgi/trace")
-                .header("User-Agent", "Mozilla/5.0 JimVPN")
                 .build()
             val resp = httpClient.newCall(req).execute()
             if (resp.isSuccessful) {
@@ -109,7 +77,7 @@ object IpLocationRepository {
                     )
                 }
             }
-        } catch (_: Exception) {}
+        } catch (ignored: Exception) {}
 
         // Fallback 2: ipify
         try {
