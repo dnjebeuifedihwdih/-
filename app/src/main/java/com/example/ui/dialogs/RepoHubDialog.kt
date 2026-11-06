@@ -86,9 +86,10 @@ fun RepoHubDialog(
 
     val repoUrl = "https://github.com/dnjebeuifedihwdih/-"
     val subUrl = "https://raw.githubusercontent.com/dnjebeuifedihwdih/-/main/sub.txt"
-    val directApkUrl = "https://github.com/dnjebeuifedihwdih/-/releases/download/v2.35.0/JIM_VPN_v2.35.0_Universal.apk"
-    val cdnMirrorUrl = "https://cdn.jsdelivr.net/gh/dnjebeuifedihwdih/-@main/dist/JIM_VPN_v2.35.0.apk"
-    val arm64ApkUrl = "https://github.com/dnjebeuifedihwdih/-/releases/download/v2.35.0/JIM_VPN_v2.35.0_arm64.apk"
+    val releasesPageUrl = "https://github.com/dnjebeuifedihwdih/-/releases"
+    val directApkUrl = "https://github.com/dnjebeuifedihwdih/-/releases/tag/v2.35.0"
+    val cdnMirrorUrl = "https://cdn.jsdelivr.net/gh/dnjebeuifedihwdih/-@main/sub.txt"
+    val arm64ApkUrl = "https://github.com/dnjebeuifedihwdih/-"
 
     var showQrDialog by remember { mutableStateOf(false) }
 
